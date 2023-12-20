@@ -113,9 +113,9 @@ def generate_random_points(n):
     return points
 
 def main():
-    n:int = 30
+    n:int = 300
     Points = generate_random_points(n)
-    tree: Octree = Octree(Points=Points, Constraint=4, MaxDepth=5)
+    tree: Octree = Octree(Points=Points, Constraint=18, MaxDepth=20)
     visualize_octree(octree=tree)
     
 if __name__ == '__main__':

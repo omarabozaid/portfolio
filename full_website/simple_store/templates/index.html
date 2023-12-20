@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-bar">
+            <h2>Options</h2>
+            <ul>
+                <li><a href="#">Option 1</a></li>
+                <li><a href="#">Option 2</a></li>
+                <li><a href="#">Option 3</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="dropdown">
+                    <button class="dropbtn">Menu</button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('index') }}">Home</a>
+                        <a href="{{ url_for('view_cart') }}">View Cart</a>
+                    </div>
+                </div>
+            </div>
+            <h1>Product List</h1>
+            <div class="product-list">
+                {% for product in products %}
+                    <div class="card">
+                        <h2>{{ product.name }}</h2>
+                        <p class="price">${{ product.price }}</p>
+                        <a href="{{ url_for('product', product_id=product.id) }}" class="details-btn">Details</a>
+                        <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart">Add to Cart</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
