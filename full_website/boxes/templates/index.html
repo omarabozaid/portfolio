@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Boxes</title>
+    <style>
+        #rectangle {
+            position: relative;
+            width: {{ rectangle.width }}px;
+            height: {{ rectangle.height }}px;
+            border: 1px solid #000;
+            margin: 20px;
+        }
+
+        .box {
+            position: absolute;
+            border: 1px solid #00F;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="rectangle">
+        {% for box in boxes %}
+            <div class="box" 
+                 data-id="{{ box.id }}" 
+                 data-x="{{ box.x }}" 
+                 data-y="{{ box.y }}" 
+                 data-width="{{ box.width }}" 
+                 data-height="{{ box.height }}"
+                 style="left: {{ box.x }}px; top: {{ box.y }}px; width: {{ box.width }}px; height: {{ box.height }}px;">
+                {{ box.id }}
+            </div>
+        {% endfor %}
+    </div>
+    <button onclick="addBox()">Add Box</button>
+</body>
+</html>
+
+<script>
+    function addBox() {
+        fetch('/add_box', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    function deleteBox(boxId) {
+        fetch(`/delete_box/${boxId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    function updateBox(boxId) {
+        const box = document.querySelector(`.box[data-id="${boxId}"]`);
+        const data = {
+            x: parseInt(box.style.left),
+            y: parseInt(box.style.top),
+            width: parseInt(box.style.width),
+            height: parseInt(box.style.height)
+        };
+
+        fetch(`/update_box/${boxId}`, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }
+
+    function enableDragAndDrop() {
+        let activeBox = null;
+        let rotationAngle = 0;
+
+        function dragStart(e) {
+            activeBox = e.target;
+            e.dataTransfer.setData('text/html', activeBox.innerHTML);
+        }
+
+        function dragEnd() {
+            activeBox = null;
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dragDrop(e) {
+            e.preventDefault();
+            const rect = document.getElementById('rectangle').getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (activeBox) {
+                activeBox.style.left = `${x - activeBox.offsetWidth / 2}px`;
+                activeBox.style.top = `${y - activeBox.offsetHeight / 2}px`;
+
+                updateBox(activeBox.dataset.id);
+            }
+        }
+
+        function rotateBox(activeBox) {
+            console.log(activeBox);
+            if (activeBox) {
+                const box = document.querySelector(`.box[data-id="${activeBox.dataset.id}"]`);
+
+                if (box) {
+                    const centerX = box.offsetLeft + box.offsetWidth / 2;
+                    const centerY = box.offsetTop + box.offsetHeight / 2;
+
+                    const deltaX = centerX - activeBox.offsetLeft - activeBox.offsetWidth / 2;
+                    const deltaY = centerY - activeBox.offsetTop - activeBox.offsetHeight / 2;
+
+                    const angle = Math.atan2(deltaY, deltaX);
+                    const newRotation = angle * (180 / Math.PI);
+
+                    const rotationDiff = newRotation - rotationAngle;
+                    rotationAngle = newRotation;
+
+                    const currentRotation = parseInt(box.style.transform.replace('rotate(', '').replace('deg)', '')) || 0;
+                    const targetRotation = currentRotation + rotationDiff;
+
+                    slowRotate(box, currentRotation, targetRotation, 0.05);
+                }
+            }
+        }
+
+        function slowRotate(box, currentRotation, targetRotation, step) {
+            if (Math.abs(currentRotation - targetRotation) > step) {
+                const newRotation = currentRotation + (targetRotation - currentRotation) * step;
+                box.style.transform = `rotate(${newRotation}deg)`;
+
+                updateBox(box.dataset.id);
+
+                requestAnimationFrame(() => slowRotate(box, newRotation, targetRotation, step));
+            } else {
+                // Snap to the exact target rotation when close enough
+                box.style.transform = `rotate(${targetRotation}deg)`;
+
+                updateBox(box.dataset.id);
+            }
+        }
+
+        const boxes = document.querySelectorAll('.box');
+        boxes.forEach(box => {
+            box.draggable = true;
+            box.addEventListener('dragstart', dragStart);
+            box.addEventListener('dragend', dragEnd);
+
+            document.addEventListener('keydown', function (e) {
+                // Rotate when the Control or Shift key is held down
+                if (e.key === 'Control' || e.key === 'Shift') {
+                    rotateBox(box);
+                }
+            });
+
+            // Touch events (unchanged from previous code)
+
+            box.addEventListener('touchstart', function (e) {
+                initialAngle = getAngle(e.touches[0]);
+                rotating = false;
+            });
+
+            box.addEventListener('touchmove', function (e) {
+                if (e.touches.length > 1) {
+                    const currentAngle = getAngle(e.touches[0]);
+                    const angleDiff = currentAngle - initialAngle;
+
+                    if (!rotating) {
+                        rotating = true;
+                        initialAngle = currentAngle;
+                    }
+
+                    rotateBox(box);
+                }
+            });
+
+            box.addEventListener('touchend', function () {
+                rotating = false;
+            });
+        });
+
+        const rectangle = document.getElementById('rectangle');
+        rectangle.addEventListener('dragover', dragOver);
+        rectangle.addEventListener('drop', dragDrop);
+    }
+
+    document.addEventListener('DOMContentLoaded', enableDragAndDrop);
+
+</script>
