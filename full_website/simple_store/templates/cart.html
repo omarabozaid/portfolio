@@ -1,3 +1,4 @@
+<!-- templates/cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +9,22 @@
 </head>
 <body>
     <h1>Shopping Cart</h1>
-    <div class="cart-list">
-        {% for product in cart %}
-            <div class="cart-item">
-                <p>{{ product.name }} - ${{ product.price }}</p>
-            </div>
-        {% endfor %}
+    <div class="product-list-container">
+        <div class="product-list">
+            {% for product in cart %}
+                <div class="card">
+                    <img src="https://via.placeholder.com/300" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">${{ product.price }}</p>
+                    <a href="{{ url_for('product', product_id=product.id) }}" class="details-btn">Details</a>
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart">Add to Cart</a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    <a href="{{ url_for('index') }}" class="continue-shopping">Continue Shopping</a>
+    
+    <button class="continue-shopping-btn">
+        <a href="{{ url_for('index') }}" class="continue-shopping">Continue Shopping</a>
+    </button>
 </body>
 </html>

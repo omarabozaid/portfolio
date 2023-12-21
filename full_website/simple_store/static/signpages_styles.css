@@ -1,0 +1,51 @@
+/* static/signpages_styles.css */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.card {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #3498db;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+}
+
+.card h2 {
+    text-align: center;
+    color: #3498db;
+}
+
+.card label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.card button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.card button:hover {
+    background-color: #217dbb;
+}
