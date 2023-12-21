@@ -34,12 +34,14 @@ class PurchasedItem(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Routes
 @app.route('/')
 def index():
-    products = Product.query.all()
-    return render_template('index.html', products=products)
-
+    if current_user.is_authenticated:
+        products = Product.query.all()
+        return render_template('index.html', products=products)
+    else:
+        return redirect(url_for('signin'))
+    
 @app.route('/product/<int:product_id>')
 def product(product_id):
     product = Product.query.get(product_id)
@@ -49,10 +51,15 @@ def product(product_id):
 @login_required
 def add_to_cart(product_id):
     product = Product.query.get(product_id)
-    cart = Cart(user=current_user, product=product)
-    db.session.add(cart)
-    db.session.commit()
-    flash('Item added to cart', 'success')
+    
+    if product:
+        cart = Cart(user=current_user, product_id=product.id)
+        db.session.add(cart)
+        db.session.commit()
+        flash('Item added to cart', 'success')
+    else:
+        flash('Product not found', 'error')
+
     return redirect(url_for('index'))
 
 @app.route('/cart')
@@ -73,11 +80,61 @@ def checkout():
     flash('Items purchased successfully', 'success')
     return redirect(url_for('index'))
 
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Replace the following logic with your actual user authentication logic
+        user = User.query.filter_by(username=username, password=password).first()
+
+        if user:
+            login_user(user)
+            flash('Logged in successfully', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'error')
+
+    return render_template('signin.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        # Replace the following logic with your actual user registration logic
+        if password == confirm_password:
+            # Check if the username is available (not already taken)
+            existing_user = User.query.filter_by(username=username).first()
+            if existing_user:
+                flash('Username already exists. Please choose another.', 'error')
+            else:
+                # Create a new user
+                new_user = User(username=username, password=password)
+                db.session.add(new_user)
+                db.session.commit()
+
+                flash('Account created successfully. Please sign in.', 'success')
+                return redirect(url_for('signin'))
+        else:
+            flash('Passwords do not match. Please try again.', 'error')
+
+    return render_template('signup.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('index'))
+
 # Run the app
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        # Add some dummy products if the Product table is empty
         if not Product.query.all():
             dummy_products = [
                 {"name": "Laptop", "price": 1200.0},
@@ -87,10 +144,8 @@ if __name__ == '__main__':
                 {"name": "Printer", "price": 300.0},
                 {"name": "Tablet", "price": 500.0},
             ]
-
             for product_data in dummy_products:
                 product = Product(name=product_data["name"], price=product_data["price"])
                 db.session.add(product)
-
             db.session.commit()
     app.run(debug=True)
