@@ -1,0 +1,8 @@
+add_subdirectory (${GEOM_DIR})
+add_subdirectory (${TOOLS_DIR})
+add_subdirectory (${ELEMENTS_DIR})
+add_subdirectory (${MESH_DIR})
+add_subdirectory (${BC_DIR})
+add_subdirectory (${FIELDS_DIR})
+add_subdirectory (${DISCRETIZATION_DIR})
+add_subdirectory (${IO_DIR})

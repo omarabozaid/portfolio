@@ -1,0 +1,2 @@
+add_library(laplacian laplacian.cpp)
+target_include_directories(laplacian PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TOOLS_DIR} ${EIGEN_DIR} ${GEOM_DIR} ${MESH_DIR} ${BC_DIR} ${ELEMENTS_DIR} ${IO_DIR} ${FIELDS_DIR})

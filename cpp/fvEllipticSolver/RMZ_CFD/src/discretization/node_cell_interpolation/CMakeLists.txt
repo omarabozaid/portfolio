@@ -1,0 +1,2 @@
+add_library(n_c_interpolation node_cell_interpolation.cpp)
+target_include_directories(n_c_interpolation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TOOLS_DIR} ${EIGEN_DIR} ${GEOM_DIR} ${MESH_DIR} ${BC_DIR} ${ELEMENTS_DIR} ${IO_DIR} ${FIELDS_DIR})

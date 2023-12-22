@@ -1,0 +1,2 @@
+add_library(div divergence.cpp)
+target_include_directories(div PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TOOLS_DIR} ${EIGEN_DIR} ${GEOM_DIR} ${MESH_DIR} ${BC_DIR} ${ELEMENTS_DIR} ${IO_DIR} ${FIELDS_DIR} ${CELL_FACE_INTERPOLATION_DIR})
