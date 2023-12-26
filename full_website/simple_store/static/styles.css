@@ -71,12 +71,12 @@ body {
 }
 
 .card {
-    flex: 0 0 calc(25% - 20px);  /* Four cards in a row with some spacing */
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
     padding: 20px;
+    margin:20px;
     transition: transform 0.3s;
 }
 
@@ -103,7 +103,7 @@ body {
 .details-btn,
 .add-to-cart {
     display: block;
-    width: 100%;
+    width: 90%;
     padding: 10px;
     margin-top: 10px;
     text-align: center;
@@ -165,4 +165,8 @@ body {
 
 .continue-shopping-btn:hover {
     background-color: #ffa41b;
+}
+
+.product{
+    max-width: 300px;
 }

@@ -4,9 +4,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_site.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
+
+from products_db.ProductsDataBaseHandler import ProductsDataBaseHandler
 
 # Models
 class User(UserMixin, db.Model):
@@ -37,7 +39,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        products = Product.query.all()
+        products = ProductsDataBaseHandler().get_product(country='Egypt')
         return render_template('index.html', products=products)
     else:
         return redirect(url_for('signin'))
@@ -85,17 +87,13 @@ def signin():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
-        # Replace the following logic with your actual user authentication logic
         user = User.query.filter_by(username=username, password=password).first()
-
         if user:
             login_user(user)
             flash('Logged in successfully', 'success')
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password', 'error')
-
     return render_template('signin.html')
 
 @app.route('/signup', methods=['GET', 'POST'])

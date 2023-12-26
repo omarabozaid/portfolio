@@ -21,7 +21,7 @@
                 <a href="#">Your Orders</a>
                 <a href="#">Wishlist</a>
                 <a href="#">Account Settings</a>
-                <a href="#">Sign Out</a>
+                <a href="{{ url_for('logout') }}">Log out</a>
             </div>
         </nav>
         <div class="main-content">
@@ -30,23 +30,22 @@
                 <a href="#">Electronics</a>
                 <a href="#">Clothing</a>
                 <a href="#">Books</a>
-                <!-- Add more categories as needed -->
+                <a href="#">Cooking</a>
             </div>
             <h2>Featured Products</h2>
             <div class="product-list-container">
-                <div class="scroll-btn prev-btn"><i class="fa fa-chevron-left"></i></div>
                 <div class="product-list">
                     {% for product in products %}
-                        <div class="card">
-                            <img src="https://via.placeholder.com/300" alt="{{ product.name }}">
-                            <h3>{{ product.name }}</h3>
-                            <p class="price">${{ product.price }}</p>
-                            <a href="{{ url_for('product', product_id=product.id) }}" class="details-btn">Details</a>
-                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart">Add to Cart</a>
+                        <div class="card product">
+                            <img src="https://via.placeholder.com/400" alt="{{ product['product_name'] }}">
+                            <h3>{{ product['product_name'] }}</h3>
+                            <p class="company-name">{{ product['product_company'] }}</p>
+                            <!-- Add other product attributes as needed -->
+                            <a href="{{ url_for('product', product_id=product['product_id']) }}" class="details-btn">Details</a>
+                            <a href="{{ url_for('add_to_cart', product_id=product['product_id']) }}" class="add-to-cart">Add to Cart</a>
                         </div>
                     {% endfor %}
-                </div>
-                <div class="scroll-btn next-btn"><i class="fa fa-chevron-right"></i></div>
+                </div>                
             </div>
         </div>
     </div>
