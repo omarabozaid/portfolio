@@ -1,0 +1,3 @@
+/home/omar/Downloads/OpenCV/Tutorial_BasicMatContainer/build/CMakeFiles/TutorialMat.dir
+/home/omar/Downloads/OpenCV/Tutorial_BasicMatContainer/build/CMakeFiles/edit_cache.dir
+/home/omar/Downloads/OpenCV/Tutorial_BasicMatContainer/build/CMakeFiles/rebuild_cache.dir

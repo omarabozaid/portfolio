@@ -1,0 +1,3 @@
+/home/omar/Downloads/OpenCV/4.Tutorial_Blending/build/CMakeFiles/TutorialBlending.dir
+/home/omar/Downloads/OpenCV/4.Tutorial_Blending/build/CMakeFiles/edit_cache.dir
+/home/omar/Downloads/OpenCV/4.Tutorial_Blending/build/CMakeFiles/rebuild_cache.dir
